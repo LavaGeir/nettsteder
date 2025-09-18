@@ -1,3 +1,9 @@
 body {
-  background-color: lightblue;
+  background-image:  url("../Bilder/11_wallpaper.jpg")
+}
+h1 {
+  color: indigo
+}
+h1 {
+  text-align: center;
 }
