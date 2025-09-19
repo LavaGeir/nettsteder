@@ -3,12 +3,12 @@ body {
   font-family: Arial, sans-serif;
 }
 nav {
-  background-color: #333;
+  background-color: #000000;
   padding: 10px;
   text-align: center;
 }
 nav a {
-  color: white;
+  color: rgb(235, 21, 21);
   text-decoration: none;
   margin: 0 15px;
   font-size: 18px;
@@ -22,7 +22,7 @@ nav a:hover {
   height: 100vh;
 }
 .image {
-  background-color: #ddd;
+  background-color: #f00b0b;
 }
 .text {
   display: flex;
