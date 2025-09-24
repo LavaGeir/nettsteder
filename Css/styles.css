@@ -35,7 +35,16 @@ nav a:hover {
 body:nth-of-type(1) {
   background-image: url('bilder/Xp_wallpaper.jpg');
   background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  color: white;
 }
 body:nth-of-type(2) {
   background-image: url('bilder/11_wallpaper.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  color: white;
 }
