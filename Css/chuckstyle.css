@@ -4,11 +4,11 @@ body {
   margin: 0;
   padding: 0;
   background-color: #f4f4f4;
-  color: #333;
+  color: #000000;
 }
 
 header {
-  background: #333;
+  background: #000000;
   color: #fff;
   padding: 10px 0;
   text-align: center;
@@ -45,7 +45,7 @@ main {
 button {
   padding: 10px 20px;
   font-size: 16px;
-  background-color: #333;
+  background-color: #3a2525;
   color: #fff;
   border: none;
   cursor: pointer;

@@ -1,14 +1,15 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
+  background-color: #ffffff;
 }
 nav {
-  background-color: #e41616;
+  background-color: #000000;
   padding: 10px;
   text-align: center;
 }
 nav a {
-  color: rgb(19, 253, 253);
+  color: rgb(255, 255, 255);
   text-decoration: none;
   margin: 0 15px;
   font-size: 18px;
