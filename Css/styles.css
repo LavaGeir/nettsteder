@@ -3,6 +3,7 @@ body {
   font-family: Arial, sans-serif;
   background-color: #ffffff;
   background-image: url("../Bilder/Xp_wallpaper.png");
+  background-size: auto;
 }
 nav {
   background-color: #000000;
