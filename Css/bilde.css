@@ -41,3 +41,14 @@ body{
 .image-box:hover .image-text {
     opacity: 1;
 }
+
+@media (max-width: 600px) {
+    .image-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .image-box img {
+        width: 100px;
+    }
+}
