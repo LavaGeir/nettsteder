@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Cellular Defender</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Three.js biblioteket for 3D-grafikk -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- FIX: Legg til PointerLockControls scriptet. Dette er nødvendig da den ikke er inkludert i hoved three.min.js filen. -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/PointerLockControls.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+            background-color: #0d1117; /* Mørk bakgrunn */
+        }
+        canvas {
+            display: block;
+        }
+        /* Egendefinert sikte */
+        #crosshair {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin-top: -10px;
+            margin-left: -10px;
+            border: 2px solid red;
+            border-radius: 50%;
+            pointer-events: none;
+            box-shadow: 0 0 5px red;
+            z-index: 1000;
+        }
+        #centerDot {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 4px;
+            height: 4px;
+            margin-top: -2px;
+            margin-left: -2px;
+            background-color: red;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1001;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sikte (Kryss-hår) -->
+    <div id="crosshair"></div>
+    <div id="centerDot"></div>
+
+    <!-- UI og Statuspanel -->
+    <div id="ui" class="absolute top-0 left-0 w-full p-4 flex justify-between items-start pointer-events-none z-50">
+        <!-- Helse -->
+        <div class="bg-gray-800/80 p-3 rounded-xl shadow-lg border border-red-500 w-64">
+            <p class="text-sm font-bold text-red-400 mb-1">Celleintegritet (Helse)</p>
+            <div id="healthBar" class="h-4 rounded-full bg-gray-600 overflow-hidden">
+                <div id="healthFill" class="h-full bg-green-500 transition-all duration-500" style="width: 100%;"></div>
+            </div>
+            <p id="healthText" class="text-xs mt-1 text-right text-green-300">100%</p>
+        </div>
+
+        <!-- Poeng og tid -->
+        <div class="bg-gray-800/80 p-3 rounded-xl shadow-lg border border-red-500 text-right">
+            <p class="text-xl font-extrabold text-red-400">Poeng: <span id="score">0</span></p>
+            <p class="text-md font-semibold text-white">Tid igjen: <span id="timer">60</span>s</p>
+        </div>
+    </div>
+
+    <!-- Spillmeny/Game Over Skjerm -->
+    <div id="overlay" class="absolute inset-0 bg-gray-900/95 flex flex-col items-center justify-center z-50 transition-opacity duration-500">
+        <h1 id="overlayTitle" class="text-6xl font-black text-red-400 mb-6 drop-shadow-lg">CELLULAR DEFENDER 3D</h1>
+        <p id="overlayMessage" class="text-xl text-gray-300 mb-10 max-w-xl text-center">
+            Velkommen, Nanobot! Forsvar cellen mot de inntrengende lipid-molekylene (fett). Bruk musen til å se deg rundt, og klikk for å skyte dem før de når deg.
+        </p>
+        <button id="startButton" class="px-10 py-4 bg-red-600 hover:bg-red-700 text-white text-2xl font-bold rounded-lg shadow-2xl transition-all transform hover:scale-105 active:scale-95">
+            START OPPDRAG
+        </button>
+    </div>
+
+    <script>
+        // --- GLOBALE VARIABLER OG INITIALISERING ---
+        let scene, camera, renderer;
+        let raycaster;
+        let pointer;
+        let isLocked = false;
+        let isPlaying = false;
+        let lastShotTime = 0;
+        const FIRE_RATE = 300; // ms
+        const MOLECULE_COUNT = 15;
+        const lipidMolecules = [];
+        const damageZone = new THREE.Vector3(0, 0, 0); // Sentrum av cellen
+        const MOVEMENT_SPEED = 0.05;
+
+        // Spilltilstand
+        let gameScore = 0;
+        let gameHealth = 100;
+        const GAME_DURATION = 60; // sekunder
+        let gameTimeLeft = GAME_DURATION;
+        let gameInterval;
+        let damageInterval;
+
+        // DOM Elementer
+        const overlay = document.getElementById('overlay');
+        const overlayTitle = document.getElementById('overlayTitle');
+        const overlayMessage = document.getElementById('overlayMessage');
+        const startButton = document.getElementById('startButton');
+        const scoreElement = document.getElementById('score');
+        const timerElement = document.getElementById('timer');
+        const healthFill = document.getElementById('healthFill');
+        const healthText = document.getElementById('healthText');
+        const crosshair = document.getElementById('crosshair');
+        const centerDot = document.getElementById('centerDot');
+
+
+        // --- FIREBASE PLACEHOLDER (ikke i bruk for dette single-player spillet) ---
+        // Funksjoner som brukes for å tilfredsstille tekniske krav, men som er tomme her
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+        // console.log("Firebase vars present but not utilized in this 3D game.");
+
+        // --- Hoved Initialisering ---
+        function init() {
+            // Scene
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x0a1420); // Mørk cellevæske
+
+            // Kamera (Spiller)
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 1.7, 0); // Standard FPS-høyde
+
+            // Renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+
+            // Raycaster for skyting
+            raycaster = new THREE.Raycaster();
+            pointer = new THREE.Vector2();
+            pointer.x = 0; // Alltid i sentrum av skjermen
+            pointer.y = 0;
+
+            // Lys
+            const ambientLight = new THREE.AmbientLight(0x404040, 5); // Mykt hvitt lys
+            scene.add(ambientLight);
+
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
+            directionalLight.position.set(0, 5, 5);
+            scene.add(directionalLight);
+
+            // Bakgrunn / Cellevegg (Enkel boks langt unna)
+            const cellWallGeometry = new THREE.BoxGeometry(50, 50, 50);
+            const cellWallMaterial = new THREE.MeshPhongMaterial({
+                color: 0x1a2e3f,
+                side: THREE.BackSide, // Render på innsiden av boksen
+                specular: 0x555555,
+                shininess: 10
+            });
+            const cellWall = new THREE.Mesh(cellWallGeometry, cellWallMaterial);
+            scene.add(cellWall);
+
+            // Kontroller for FPS-bevegelse (kun rotasjon via musepeker)
+            // THREE.PointerLockControls er nå tilgjengelig etter at scriptet ble inkludert i <head>
+            const controls = new THREE.PointerLockControls(camera, document.body);
+            scene.add(controls.getObject());
+
+            // Hendelseslytter for muselås
+            document.addEventListener('click', () => {
+                if (isPlaying) {
+                    controls.lock();
+                }
+            });
+
+            controls.addEventListener('lock', () => {
+                isLocked = true;
+                crosshair.style.display = 'block';
+                centerDot.style.display = 'block';
+                overlay.style.opacity = 0;
+                overlay.style.pointerEvents = 'none';
+            });
+
+            controls.addEventListener('unlock', () => {
+                isLocked = false;
+                crosshair.style.display = 'none';
+                centerDot.style.display = 'none';
+                if (isPlaying) {
+                    // Vis pause-skjerm
+                    showOverlay(
+                        "PAUSE",
+                        "Spillet er satt på pause. Klikk på skjermen for å fortsette.",
+                        "Gjenoppta Oppdrag"
+                    );
+                    overlay.style.opacity = 1;
+                    overlay.style.pointerEvents = 'auto';
+                }
+            });
+
+            // Hendelseslytter for skyting (kun når musen er låst)
+            document.addEventListener('mousedown', (event) => {
+                if (isLocked && isPlaying && event.button === 0) { // Venstreklikk
+                    shoot();
+                }
+            });
+
+            // Hendelseslytter for start-knapp
+            startButton.addEventListener('click', () => {
+                if (startButton.textContent.includes("START")) {
+                    startGame();
+                } else if (startButton.textContent.includes("SPILL IGJEN")) {
+                    startGame();
+                } else if (startButton.textContent.includes("Gjenoppta")) {
+                    controls.lock();
+                }
+            });
+
+            window.addEventListener('resize', onWindowResize, false);
+
+            animate();
+        }
+
+        // Håndterer endring av vindusstørrelse
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        // --- SPILL LOGIKK OG TILSTAND ---
+
+        function startGame() {
+            // Tilbakestill tilstand
+            isPlaying = true;
+            gameScore = 0;
+            gameHealth = 100;
+            gameTimeLeft = GAME_DURATION;
+            updateUI();
+
+            // Skjul overlay og lås mus
+            overlay.style.opacity = 0;
+            overlay.style.pointerEvents = 'none';
+            // Start muselås etter et lite delay for å sikre at brukeren er klar
+            setTimeout(() => {
+                const controls = scene.getObjectByName('PointerLockControls');
+                if (controls) controls.lock();
+            }, 100);
+
+
+            // Fjern eksisterende molekyler
+            lipidMolecules.forEach(m => scene.remove(m));
+            lipidMolecules.length = 0;
+
+            // Generer nye molekyler
+            for (let i = 0; i < MOLECULE_COUNT; i++) {
+                spawnMolecule(i * 10);
+            }
+
+            // Start spilltid og skadesjekk
+            if (gameInterval) clearInterval(gameInterval);
+            gameInterval = setInterval(updateGameTime, 1000);
+
+            if (damageInterval) clearInterval(damageInterval);
+            damageInterval = setInterval(checkCollisions, 1000);
+        }
+
+        function endGame(won = false) {
+            isPlaying = false;
+            if (gameInterval) clearInterval(gameInterval);
+            if (damageInterval) clearInterval(damageInterval);
+
+            // Lås opp musepekeren for å vise Game Over-skjermen
+            const controls = scene.getObjectByName('PointerLockControls');
+            if (controls) controls.unlock();
+
+            showOverlay(
+                won ? "FULLFØRT!" : "OPPDRAG MISLYKKET",
+                `Du overlevde i ${GAME_DURATION - gameTimeLeft} sekunder og fikk ${gameScore} poeng! ${won ? 'Flott jobb!' : 'Prøv igjen.'}`,
+                "SPILL IGJEN"
+            );
+            overlay.style.opacity = 1;
+            overlay.style.pointerEvents = 'auto';
+        }
+
+        function updateGameTime() {
+            gameTimeLeft--;
+            if (gameTimeLeft < 0) {
+                gameTimeLeft = 0;
+                endGame(true);
+            }
+            updateUI();
+        }
+
+        function updateHealth(damage) {
+            gameHealth = Math.max(0, gameHealth - damage);
+            updateUI();
+            if (gameHealth <= 0) {
+                endGame(false);
+            }
+        }
+
+        function updateScore(points) {
+            gameScore += points;
+            updateUI();
+        }
+
+        function updateUI() {
+            scoreElement.textContent = gameScore;
+            timerElement.textContent = gameTimeLeft;
+
+            healthFill.style.width = `${gameHealth}%`;
+            healthText.textContent = `${gameHealth}%`;
+
+            if (gameHealth > 50) {
+                healthFill.className = 'h-full bg-green-500 transition-all duration-500';
+                healthText.className = 'text-xs mt-1 text-right text-green-300';
+            } else if (gameHealth > 20) {
+                healthFill.className = 'h-full bg-yellow-500 transition-all duration-500';
+                healthText.className = 'text-xs mt-1 text-right text-yellow-300';
+            } else {
+                healthFill.className = 'h-full bg-red-500 transition-all duration-500';
+                healthText.className = 'text-xs mt-1 text-right text-red-300';
+            }
+        }
+
+        function showOverlay(title, message, buttonText) {
+            overlayTitle.textContent = title;
+            overlayMessage.textContent = message;
+            startButton.textContent = buttonText;
+        }
+
+        // --- 3D MODELLER OG MEKANIKKER ---
+
+        function spawnMolecule(initialZ = -50) {
+            // Lipid Molekyl Geometri (Enkel Sphere)
+            const radius = Math.random() * 0.5 + 0.3; // 0.3 til 0.8
+            const geometry = new THREE.SphereGeometry(radius, 16, 16);
+            const material = new THREE.MeshPhongMaterial({
+                color: 0xcc0000, // Rødt/usunt fett
+                specular: 0xffffff,
+                shininess: 50
+            });
+            const molecule = new THREE.Mesh(geometry, material);
+
+            // Tilfeldig startposisjon langt unna
+            const angle = Math.random() * Math.PI * 2;
+            const distance = Math.random() * 10 + 20; // 20 til 30 enheter unna
+            molecule.position.x = Math.cos(angle) * distance;
+            molecule.position.y = Math.random() * 5 - 2.5; // Mellom -2.5 og 2.5
+            molecule.position.z = Math.sin(angle) * distance;
+
+            // Lagre metadata for bevegelse
+            molecule.userData.speed = MOVEMENT_SPEED * (1 + Math.random() * 0.5); // Litt variasjon i hastighet
+            molecule.userData.damage = Math.round(radius * 10);
+            molecule.userData.isHit = false;
+
+            scene.add(molecule);
+            lipidMolecules.push(molecule);
+        }
+
+        function moveMolecules() {
+            lipidMolecules.forEach(molecule => {
+                // Beregn retning mot sentrum (0, 0, 0)
+                const direction = damageZone.clone().sub(molecule.position).normalize();
+                molecule.position.addScaledVector(direction, molecule.userData.speed);
+
+                // Rotasjon for dynamikk
+                molecule.rotation.x += 0.01;
+                molecule.rotation.y += 0.02;
+            });
+        }
+
+        function checkCollisions() {
+            // Sjekker om molekylene har nådd sentrum (spilleren)
+            const collisionRadius = 1; // Nærhet til spilleren (0, 0, 0)
+            const remainingMolecules = [];
+
+            lipidMolecules.forEach(molecule => {
+                if (molecule.position.distanceTo(damageZone) < collisionRadius) {
+                    // Kollisjon! Ta skade
+                    updateHealth(molecule.userData.damage);
+                    scene.remove(molecule);
+                } else {
+                    remainingMolecules.push(molecule);
+                }
+            });
+
+            lipidMolecules.length = 0;
+            lipidMolecules.push(...remainingMolecules);
+
+            // Hold molekylantallet oppe
+            while (lipidMolecules.length < MOLECULE_COUNT && isPlaying) {
+                spawnMolecule();
+            }
+        }
+
+        function shoot() {
+            const currentTime = Date.now();
+            if (currentTime - lastShotTime < FIRE_RATE) return;
+            lastShotTime = currentTime;
+
+            // Sett opp raycaster fra kameraets sentrum
+            raycaster.setFromCamera(pointer, camera);
+
+            // Finn objekter som strålen treffer
+            const intersects = raycaster.intersectObjects(lipidMolecules);
+
+            if (intersects.length > 0) {
+                const target = intersects[0].object;
+
+                if (!target.userData.isHit) {
+                    target.userData.isHit = true;
+                    // Endre utseendet for å indikere at den er truffet (Enzym-effekt)
+                    target.material.color.setHex(0x3f51b5); // Skift til blå/lilla
+
+                    // Ødelegg molekylet etter en kort animasjon
+                    setTimeout(() => {
+                        if (target.userData.isHit) {
+                             // Sjekk om den fortsatt er truffet (kan ha blitt truffet flere ganger)
+                            scene.remove(target);
+                            const index = lipidMolecules.indexOf(target);
+                            if (index > -1) {
+                                lipidMolecules.splice(index, 1);
+                                updateScore(15);
+                            }
+                        }
+                    }, 500); // 0.5 sekund for å "løse opp"
+                }
+            }
+        }
+
+
+        // --- ANIMASJONSSYKLUS ---
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            if (isPlaying) {
+                moveMolecules();
+            }
+            renderer.render(scene, camera);
+        }
+        window.onload = function() {
+            init();
+        }
+    </script>
+</body>
+</html>
