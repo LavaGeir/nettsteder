@@ -60,6 +60,6 @@ function spillFunksjon() {
 }
 
 // Denne funksjonen skal restarte spillet og dens verdier
-function restart() {
+function restart(restart) {
   //logikk for å nullstille spillet og dets variabler
 }
