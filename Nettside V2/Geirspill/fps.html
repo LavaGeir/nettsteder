@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Cellular Defender</title>
+    <title>Geirene angriper</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Three.js biblioteket for 3D-grafikk -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -60,7 +60,7 @@
     <div id="ui" class="absolute top-0 left-0 w-full p-4 flex justify-between items-start pointer-events-none z-50">
         <!-- Helse -->
         <div class="bg-gray-800/80 p-3 rounded-xl shadow-lg border border-red-500 w-64">
-            <p class="text-sm font-bold text-red-400 mb-1">Celleintegritet (Helse)</p>
+            <p class="text-sm font-bold text-red-400 mb-1">Melkprosent (Helse)</p>
             <div id="healthBar" class="h-4 rounded-full bg-gray-600 overflow-hidden">
                 <div id="healthFill" class="h-full bg-green-500 transition-all duration-500" style="width: 100%;"></div>
             </div>
@@ -78,7 +78,7 @@
     <div id="overlay" class="absolute inset-0 bg-gray-900/95 flex flex-col items-center justify-center z-50 transition-opacity duration-500">
         <h1 id="overlayTitle" class="text-6xl font-black text-red-400 mb-6 drop-shadow-lg">CELLULAR DEFENDER 3D</h1>
         <p id="overlayMessage" class="text-xl text-gray-300 mb-10 max-w-xl text-center">
-            Velkommen, Nanobot! Forsvar cellen mot de inntrengende lipid-molekylene (fett). Bruk musen til å se deg rundt, og klikk for å skyte dem før de når deg.
+            Velkommen, Kåre! Forsvar deg selv mot Geirene. Bruk musen til å se deg rundt, og klikk for å skyte dem før de når deg.
         </p>
         <button id="startButton" class="px-10 py-4 bg-red-600 hover:bg-red-700 text-white text-2xl font-bold rounded-lg shadow-2xl transition-all transform hover:scale-105 active:scale-95">
             START OPPDRAG

@@ -1,10 +1,16 @@
+header, nav, ul, li, a, div {
+    margin: 2;
+    padding: 2;
+    box-sizing: border-box;
+    background-color: #f10a0a;
+}
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana,
     sans-serif;
     margin: 5;
     padding: 10;
     background-color: #ffffff;
-    color: #ff0000;
+    color: #0033ff;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
