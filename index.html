@@ -7,7 +7,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300..900&display=swap');
-        
+        /* Har fått masse hjelp av killian på discord */
+
         /* Definere Virgls Hovedfarge (En blå farge) */
         :root {
             --vergil-accent: #00FFFF;
@@ -18,7 +19,7 @@
         body {
             /* Dyp, rolig bakgrunn */
             background-color: var(--bg-dark); 
-            color: #E0F7FA; /* Veldig lys cyan-aktig tekst */
+            color: #E0F7FA;
             font-family: 'Inter', sans-serif;
             min-height: 100vh;
             padding: 0;
@@ -32,7 +33,7 @@
             padding: 20px;
         }
 
-        /* Ny Header-stil: Full bredde med bakgrunnseffekt */
+        /* Ny Header-stil Full bredde med bakgrunnseffekt */
         .header-bg {
             background-image: linear-gradient(90deg, #101030, #181845, #101030);
             border-bottom: 2px solid var(--vergil-accent);
@@ -41,15 +42,15 @@
         }
 
         .combo-card {
-            background-color: #1A1A3A; /* Mørkere bakgrunn for kortene */
+            background-color: #1A1A3A;
             border: 1px solid #3A3A6A;
             transition: border-color 0.2s, background-color 0.2s;
-            border-radius: 4px; /* Skarpere kanter */
+            border-radius: 4px;
             padding: 1.25rem;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
         }
         .combo-card:hover {
-            border-color: var(--vergil-accent); /* Elektrisk Cyan linje ved hover */
+            border-color: var(--vergil-accent);
             background-color: #20204A;
         }
         
@@ -62,32 +63,32 @@
             padding: 0 0.8rem;
             font-weight: 700;
             font-size: 0.8rem;
-            border-radius: 4px; /* Mindre avrundet */
+            border-radius: 4px;
             margin: 0 0.2rem 0.2rem 0.2rem;
             color: #FFFFFF;
-            background-color: #222255; /* Dyp, nøytral blå */
+            background-color: #222255;
             border: 1px solid #555588;
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.6);
         }
         .input-key.action {
-            background-color: #B91C1C; /* Dyp rød */
+            background-color: #B91C1C;
             border-color: #EF4444;
             color: #FFF;
         }
         .input-key.style {
-            background-color: #059669; /* Dyp grønn */
+            background-color: #059669;
             border-color: #10B981;
             color: #FFF;
         }
         .input-key.lock {
-            background-color: #1D4ED8; /* Dyp blå for Lås */
+            background-color: #1D4ED8;
             border-color: #60A5FA;
             color: #FFF;
         }
         
         .text-vergil {
             color: var(--vergil-accent); 
-            text-shadow: 0 0 5px var(--vergil-shadow); /* Subtil glød */
+            text-shadow: 0 0 5px var(--vergil-shadow);
         }
         
         .section-header {
@@ -107,7 +108,7 @@
             margin-right: 8px;
             vertical-align: middle;
             border-radius: 4px;
-            box-shadow: 0 0 5px var(--vergil-shadow); /* Ikoner gløder litt */
+            box-shadow: 0 0 5px var(--vergil-shadow);
         }
     </style>
     <script>
@@ -122,14 +123,13 @@
                 case 'ForceEdge':
                     return basePlaceholder + "1f2937/10B981?text=FE"; // Grønn
                 case 'Summoned':
-                    return basePlaceholder + "1f2937/FACC15?text=SS"; // Gul/Gull
+                    return basePlaceholder + "bilder"; // Gul/Gull
                 case 'SDT':
                     return basePlaceholder + "1f2937/A855F7?text=SDT"; // Lilla
                 default:
                     return basePlaceholder + "1f2937/E0F7FA?text=W";
             }
         }
-
         // Funksjon for å generere HTML for ikoner
         function createIcon(weapon, altText) {
             return `
@@ -189,10 +189,10 @@
             let titleClass = "text-xl font-bold mb-2";
 
             if (combo.isJustFrame) {
-                cardClass += " border-l-4 border-red-500 hover:border-red-400"; /* Rød linje for JF */
+                cardClass += " border-l-4 border-red-500 hover:border-red-400";
                 titleClass += " text-red-400";
             } else {
-                cardClass += " border-l-4 border-[#3A3A6A] hover:border-cyan-400"; /* Cyan linje for vanlig */
+                cardClass += " border-l-4 border-[#3A3A6A] hover:border-cyan-400";
                 titleClass += " text-vergil";
             }
 
@@ -337,21 +337,21 @@
         <section id="beginner" class="my-16">
             <h2 class="section-header text-white">1. Nybegynner: Grunnleggende Aggresjon</h2>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="beginner-combos">
-                <!-- Innhold injiseres her -->
+                <!-- Innhold injectes her -->
             </div>
         </section>
 
         <section id="intermediate" class="my-16">
             <h2 class="section-header text-white">2. Mellomnivå: Flyt, Lading og Våpenskifte</h2>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="intermediate-combos">
-                <!-- Innhold injiseres her -->
+                <!-- Innhold injectes her -->
             </div>
         </section>
 
         <section id="advanced" class="my-16">
             <h2 class="section-header text-white">3. Vanskelig: Just Frame og Ressurskontroll</h2>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="advanced-combos">
-                <!-- Innhold injiseres her -->
+                <!-- Innhold injectes her -->
             </div>
         </section>
 
