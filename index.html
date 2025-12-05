@@ -9,7 +9,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300..900&display=swap');
         /* Har fått masse hjelp av killian på discord */
 
-        /* Definere Virgls Hovedfarge (En blå farge) */
+        /* Definere Virgls Hovedfarge */
         :root {
             --vergil-accent: #00FFFF;
             --vergil-shadow: rgba(0, 255, 255, 0.5);
@@ -17,7 +17,6 @@
         }
 
         body {
-            /* Dyp, rolig bakgrunn */
             background-color: var(--bg-dark); 
             color: #E0F7FA;
             font-family: 'Inter', sans-serif;
@@ -33,7 +32,7 @@
             padding: 20px;
         }
 
-        /* Ny Header-stil Full bredde med bakgrunnseffekt */
+        /* Ny Header stil Full bredde med bakgrunnseffekt */
         .header-bg {
             background-image: linear-gradient(90deg, #101030, #181845, #101030);
             border-bottom: 2px solid var(--vergil-accent);
@@ -54,7 +53,7 @@
             background-color: #20204A;
         }
         
-        /* Redesignet Input Key: Mindre, kantete, med en subtil skygge */
+        /* Redesignet Input Key: Mindre, kantete, med en skygge */
         .input-key {
             display: inline-flex;
             align-items: center;
@@ -112,25 +111,24 @@
         }
     </style>
     <script>
-        // Funksjon for å generere placeholder-ikoner med den nye stilen
+        // Placeholder ikonene er nå ubrukelig siden jeg har bilder
         function getWeaponIconUrl(weapon) {
             const basePlaceholder = "https://placehold.co/40x40/";
             switch (weapon) {
                 case 'Yamato':
-                    return basePlaceholder + "1f2937/00FFFF?text=Y"; // Cyan
+                    return basePlaceholder + "1f2937/00FFFF?text=Y";
                 case 'Beowulf':
-                    return basePlaceholder + "1f2937/EF4444?text=B"; // Rød
+                    return basePlaceholder + "1f2937/EF4444?text=B"; 
                 case 'ForceEdge':
-                    return basePlaceholder + "1f2937/10B981?text=FE"; // Grønn
+                    return basePlaceholder + "1f2937/10B981?text=FE";
                 case 'Summoned':
-                    return basePlaceholder + "bilder"; // Gul/Gull
+                    return basePlaceholder + "bilder";
                 case 'SDT':
-                    return basePlaceholder + "1f2937/A855F7?text=SDT"; // Lilla
+                    return basePlaceholder + "1f2937/A855F7?text=SDT";
                 default:
                     return basePlaceholder + "1f2937/E0F7FA?text=W";
             }
         }
-        // Funksjon for å generere HTML for ikoner
         function createIcon(weapon, altText) {
             return `
                 <img 
@@ -168,11 +166,11 @@
                 { title: "FE Stinger & JC", weapons: ["ForceEdge", "Yamato"], desc: "Raskt stikkangrep, skifte til Yamato, og umiddelbart Judgement Cut.", inputs: '<span class="input-key style">L2</span> (til FE) &gt; <span class="input-key lock">R1+FWD+B</span> &gt; <span class="input-key style">L2</span> (til Yamato) &gt; <span class="input-key lock">R1+B</span>' }
             ],
             advanced: [
-                { title: "Perfekt Judgement Cut End (MJCE)", weapons: ["Yamato"], desc: "Krever tre *Just Frame*-utgivelser av Judgement Cut (R1+B) med **perfekt timing**.", inputs: '<span class="input-key lock">R1+B</span> (Perfect) <span class="text-red-400 mx-1">x</span> <span class="input-key">3</span>', isJustFrame: true },
+                { title: "Perfekt Judgement Cut End (MJCE)", weapons: ["Yamato"], desc: "Krever tre Just Frame brukelser av Judgement Cut (R1+B) med perfekt timing.", inputs: '<span class="input-key lock">R1+B</span> (Perfect) <span class="text-red-400 mx-1">x</span> <span class="input-key">3</span>', isJustFrame: true },
                 { title: "Deep Stinger (FE)", weapons: ["ForceEdge"], desc: "Raskt våpenskifte til FE og Deep Stinger. Ekstremt raskt angrep.", inputs: '<span class="input-key style">L2</span> (til FE) &gt; <span class="input-key lock">R1+Y</span>', isJustFrame: true },
                 { title: "Spiral Swords (Defense)", weapons: ["Summoned"], desc: "Omgir Vergil med sverd for kontinuerlig skade og Concentration.", inputs: '<span class="input-key">SS</span> (hold) &gt; <span class="input-key action">B</span>' },
                 { title: "World of V (SDT-Style)", weapons: ["SDT"], desc: "Kinematisk angrep fra SDT. Utrolig skade og stilpoeng.", inputs: '<span class="input-key">L1+R1</span> (SDT) &gt; <span class="input-key style">L2+B</span>' },
-                { title: "Sheath and Strike (Perfect Opener)", weapons: ["Yamato"], desc: "Vanskelig *Just Frame* Yamato-åpner. Maksimal Concentration boost.", inputs: '<span class="input-key lock">R1+FWD+Y</span> (Perfect) &gt; <span class="input-key action">Y</span> (Aerial)', isJustFrame: true },
+                { title: "Sheath and Strike (Perfect Opener)", weapons: ["Yamato"], desc: "Vanskelig Just Frame Yamato-åpner. Maksimal Concentration boost.", inputs: '<span class="input-key lock">R1+FWD+Y</span> (Perfect) &gt; <span class="input-key action">Y</span> (Aerial)', isJustFrame: true },
                 { title: "SDT Transition & Beowulf", weapons: ["SDT", "Beowulf"], desc: "SDT-aktivering for i-frames, skifte til BW og start Blitz.", inputs: '<span class="input-key">L1+R1</span> (SDT) &gt; <span class="input-key style">L2</span> (til BW) &gt; <span class="input-key action">Y</span> x3', isJustFrame: true },
                 { title: "BW Heavy & Yamato Finish", weapons: ["Beowulf", "Yamato"], desc: "Full Beowulf-kombo, kanseller slutten med Yamato Judgement Cut.", inputs: '<span class="input-key style">L2</span> (til BW) &gt; <span class="input-key action">Y</span> x4 &gt; <span class="input-key lock">R1+B</span>' },
                 { title: "Aerial JCE Chain", weapons: ["Yamato"], desc: "Løft, Air Trick, og kjør 3 Just Frame Judgement Cuts i luften.", inputs: '<span class="input-key lock">R1+Y</span> (hold) &gt; <span class="input-key lock">R1+A</span> &gt; <span class="input-key lock">R1+B</span> (Perfect) x3 (Luft)', isJustFrame: true },
@@ -207,7 +205,7 @@
             `;
         }
 
-        // Funksjon for å injisere innholdet i DOM
+        // Funksjon for å injecte innholdet i DOM
         window.onload = function() {
             document.getElementById('beginner-combos').innerHTML = combos.beginner.map(generateComboCard).join('');
             document.getElementById('intermediate-combos').innerHTML = combos.intermediate.map(generateComboCard).join('');
@@ -223,20 +221,20 @@
             <!-- Tittel og Tekst -->
             <div class="mb-6 md:mb-0">
                 <h1 class="text-6xl font-extrabold text-white tracking-tighter mb-2">
-                    <span class="text-vergil">//</span> <span class="text-shadow-lg">VERGIL'S KUNNSKAPSBIBLIOTEK</span>
+                    <span class="text-vergil"></span> <span class="text-shadow-lg">VERGIL'S KOMBOBIBLIOTEK</span>
                 </h1>
                 <p class="text-xl text-gray-300">
-                    Optimaliserte kombinasjonssekvenser og Just Frame timing for DMC5.
+                    Optimaliserte kombinasjoner og Just Frame timing for DMC5.
                 </p>
             </div>
 
-            <!-- Bilde av Vergil (Placeholder) -->
+            <!-- Bilde av Vergil -->
             <div class="flex-shrink-0">
                 <img 
-                    src="Nettside V2/Bilder/8a0wds8pzwmb1.jpg" 
-                    alt="Stilisert bilde av Vergil fra Devil May Cry 5" 
+                    src="Nettside V2/Bilder/dmc5.gif" 
+                    alt="Bilde av Vergil fra Devil May Cry 5" 
                     class="rounded-full border-4 border-vergil shadow-xl"
-                    style="width: 180px; height: 180px; object-fit: cover;"
+                    style="width: 220px; height: 218px; object-fit: cover;"
                 >
             </div>
         </header>
@@ -244,19 +242,19 @@
 
     <div class="main-content">
         
-        <!-- Ny Navigasjon Legges til her -->
+        <!-- Navigasjon her -->
         <nav class="flex justify-center space-x-8 text-lg font-semibold my-8">
             <a href="index.html" class="text-vergil border-b-2 border-vergil pb-1 hover:text-white transition duration-200">
-                // Kombinasjonsbibliotek
+                Kombinasjonsbibliotek
             </a>
             <a href="Nettside V2/vergil_deep_lore.html" class="text-gray-400 pb-1 hover:text-vergil transition duration-200">
-                // Historie & Våpen (NY)
+                Historie & Våpen (NY WIP)
             </a>
         </nav>
 
-        <!-- Input Forklaring / Legende -->
+        <!-- Input Forklaring -->
         <section class="my-12 p-6 rounded-lg bg-[#1A1A3A] border border-[#3A3A6A] shadow-xl">
-            <h2 class="text-2xl font-bold text-vergil mb-6">Kontroll-Legende (PlayStation / Xbox)</h2>
+            <h2 class="text-2xl font-bold text-vergil mb-6">Kontroller/Controls (PlayStation / Xbox)</h2>
             <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-x-4 gap-y-6 text-sm">
                 <!-- RAD 1: Grunnleggende angrep -->
                 <div class="col-span-1">
@@ -279,7 +277,7 @@
                 </div>
                 <div class="col-span-1">
                     <div class="flex flex-col h-full">
-                        <span class="input-key style mb-1 w-full justify-center">L2 / LT</span>
+                        <span class="input-key style mb-1 w-full justify-center">LT / L2</span>
                         <p class="text-xs text-gray-400">Style / Våpenskifte (Endrer Yamato / BW / FE)</p>
                     </div>
                 </div>
@@ -287,7 +285,7 @@
                 <!-- RAD 2: Modifikatorer og Evner -->
                 <div class="col-span-1">
                     <div class="flex flex-col h-full">
-                        <span class="input-key lock mb-1 w-full justify-center">R1 / RB</span>
+                        <span class="input-key lock mb-1 w-full justify-center">RB / R1</span>
                         <p class="text-xs text-gray-400">Lock-On (Lås mål for retningsbestemte angrep)</p>
                     </div>
                 </div>
@@ -299,13 +297,13 @@
                 </div>
                 <div class="col-span-1">
                     <div class="flex flex-col h-full">
-                        <span class="input-key mb-1 w-full justify-center">L1 / LB</span>
+                        <span class="input-key mb-1 w-full justify-center">LB / L1</span>
                         <p class="text-xs text-gray-400">Aktivering av Devil Trigger (DT)</p>
                     </div>
                 </div>
                 <div class="col-span-1">
                     <div class="flex flex-col h-full">
-                        <span class="input-key mb-1 w-full justify-center">L1 + R1</span>
+                        <span class="input-key mb-1 w-full justify-center">L1 + R1/LB + RB</span>
                         <p class="text-xs text-gray-400">Aktivering av Sin Devil Trigger (SDT)</p>
                     </div>
                 </div>
@@ -313,7 +311,7 @@
                 <!-- RAD 3: Timing og Bevegelse (Enklere) -->
                 <div class="col-span-2 sm:col-span-1">
                     <div class="flex flex-col h-full">
-                        <span class="input-key mb-1 w-full justify-center">hold</span>
+                        <span class="input-key mb-1 w-full justify-center">Hold</span>
                         <p class="text-xs text-gray-400">Hold knappen nede (for lading)</p>
                     </div>
                 </div>
@@ -337,21 +335,21 @@
         <section id="beginner" class="my-16">
             <h2 class="section-header text-white">1. Nybegynner: Grunnleggende Aggresjon</h2>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="beginner-combos">
-                <!-- Innhold injectes her -->
+                <!-- Innhold her -->
             </div>
         </section>
 
         <section id="intermediate" class="my-16">
             <h2 class="section-header text-white">2. Mellomnivå: Flyt, Lading og Våpenskifte</h2>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="intermediate-combos">
-                <!-- Innhold injectes her -->
+                <!-- Innhold her -->
             </div>
         </section>
 
         <section id="advanced" class="my-16">
             <h2 class="section-header text-white">3. Vanskelig: Just Frame og Ressurskontroll</h2>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="advanced-combos">
-                <!-- Innhold injectes her -->
+                <!-- Innhold her -->
             </div>
         </section>
 
