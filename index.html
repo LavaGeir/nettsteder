@@ -128,18 +128,6 @@
                 default:
                     return basePlaceholder + "1f2937/E0F7FA?text=W";
             }
-        }
-        function createIcon(weapon, altText) {
-            return `
-                <img 
-                    src="${getWeaponIconUrl(weapon)}" 
-                    alt="${altText}" 
-                    class="weapon-icon"
-                    onerror="this.onerror=null; this.src='https://placehold.co/30x30/1f2937/FFFFFF?text=FAIL';"
-                >
-            `;
-        }
-        
         const combos = {
             beginner: [
                 { title: "Yamato Combo A (Basis)", weapons: ["Yamato"], desc: "Standard 3-slags sekvens. God skade og Concentration.", inputs: '<span class="input-key action">Y</span> &gt; <span class="input-key action">Y</span> &gt; <span class="input-key action">Y</span>' },
